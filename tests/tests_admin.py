@@ -4,6 +4,16 @@ from playwright.sync_api import Page, expect
 from pages.admin_pages import AdminPage
 
 
+# Generate unique test data for this run to keep test data isolated and clean
+RUN_ID = int(time.time())
+TEST_EXP_COMPANY = f"[TEST] QA Experience {RUN_ID}"
+TEST_TECH_NAME = f"[TEST] Skill_{RUN_ID}"
+TEST_PROJECT_TITLE = f"[TEST] Project {RUN_ID}"
+TEST_PROJECT_SLUG = f"test-project-{RUN_ID}"
+TEST_ARTICLE_TITLE = f"[TEST] Article {RUN_ID}"
+TEST_ARTICLE_SLUG = f"test-article-{RUN_ID}"
+
+
 # ==============================================================================
 # SECTION 1: OVERVIEW & DASHBOARD STATS
 # ==============================================================================
@@ -58,7 +68,7 @@ def test_create_new_experience(admin_page: AdminPage):
     admin_page.open_create_experience_modal()
 
     admin_page.fill_and_save_experience(
-        company="PT Digital Solusi Indonesia",
+        company=TEST_EXP_COMPANY,
         role="Senior QA Automation Engineer",
         location="Jakarta, Indonesia",
         start_date="2024-01-01",
@@ -67,6 +77,15 @@ def test_create_new_experience(admin_page: AdminPage):
     )
 
     expect(admin_page.modal_experience).not_to_be_visible()
+    expect(admin_page.experiences_tbody.locator("tr").filter(has_text=TEST_EXP_COMPANY).first).to_be_visible()
+
+
+def test_delete_experience(admin_page: AdminPage):
+    """
+    Test 5: Menghapus data Work Experience yang dibuat dan memastikan terhapus.
+    """
+    admin_page.delete_experience(TEST_EXP_COMPANY)
+    expect(admin_page.experiences_tbody.locator("tr").filter(has_text=TEST_EXP_COMPANY)).to_have_count(0)
 
 
 # ==============================================================================
@@ -75,7 +94,7 @@ def test_create_new_experience(admin_page: AdminPage):
 
 def test_navigate_to_tech_stacks(admin_page: AdminPage):
     """
-    Test 5: Memverifikasi navigasi ke menu Tech Stacks berhasil.
+    Test 6: Memverifikasi navigasi ke menu Tech Stacks berhasil.
     """
     admin_page.go_to_tech_stacks()
 
@@ -86,7 +105,7 @@ def test_navigate_to_tech_stacks(admin_page: AdminPage):
 
 def test_open_and_close_tech_stack_modal(admin_page: AdminPage):
     """
-    Test 6: Memverifikasi modal Add Tech Stack dapat dibuka dan ditutup.
+    Test 7: Memverifikasi modal Add Tech Stack dapat dibuka dan ditutup.
     """
     admin_page.open_create_tech_stack_modal()
 
@@ -100,18 +119,27 @@ def test_open_and_close_tech_stack_modal(admin_page: AdminPage):
 
 def test_create_new_tech_stack(admin_page: AdminPage):
     """
-    Test 7: Menambahkan data Tech Stack baru.
+    Test 8: Menambahkan data Tech Stack baru.
     """
     admin_page.open_create_tech_stack_modal()
 
     admin_page.fill_and_save_tech_stack(
-        name="Playwright Python",
+        name=TEST_TECH_NAME,
         category="Automation Testing",
         proficiency="Advanced",
         is_learning=False
     )
 
     expect(admin_page.modal_tech_stack).not_to_be_visible()
+    expect(admin_page.tech_stacks_tbody.locator("tr").filter(has_text=TEST_TECH_NAME).first).to_be_visible()
+
+
+def test_delete_tech_stack(admin_page: AdminPage):
+    """
+    Test 9: Menghapus data Tech Stack yang dibuat dan memastikan terhapus.
+    """
+    admin_page.delete_tech_stack(TEST_TECH_NAME)
+    expect(admin_page.tech_stacks_tbody.locator("tr").filter(has_text=TEST_TECH_NAME)).to_have_count(0)
 
 
 # ==============================================================================
@@ -120,7 +148,7 @@ def test_create_new_tech_stack(admin_page: AdminPage):
 
 def test_navigate_to_projects(admin_page: AdminPage):
     """
-    Test 8: Memverifikasi navigasi ke menu Projects berhasil.
+    Test 10: Memverifikasi navigasi ke menu Projects berhasil.
     """
     admin_page.go_to_projects()
 
@@ -131,7 +159,7 @@ def test_navigate_to_projects(admin_page: AdminPage):
 
 def test_open_and_close_project_modal(admin_page: AdminPage):
     """
-    Test 9: Memverifikasi modal Add Project dapat dibuka dan ditutup.
+    Test 11: Memverifikasi modal Add Project dapat dibuka dan ditutup.
     """
     admin_page.open_create_project_modal()
 
@@ -146,19 +174,27 @@ def test_open_and_close_project_modal(admin_page: AdminPage):
 
 def test_create_new_project(admin_page: AdminPage):
     """
-    Test 10: Menambahkan data Project baru.
+    Test 12: Menambahkan data Project baru.
     """
-    unique_id = int(time.time())
     admin_page.open_create_project_modal()
 
     admin_page.fill_and_save_project(
-        title=f"Automated Test Framework {unique_id}",
-        slug=f"test-framework-{unique_id}",
+        title=TEST_PROJECT_TITLE,
+        slug=TEST_PROJECT_SLUG,
         category="QA Engineering",
         description="Full E2E Testing Framework with Page Object Model"
     )
 
     expect(admin_page.modal_project).not_to_be_visible()
+    expect(admin_page.projects_tbody.locator("tr").filter(has_text=TEST_PROJECT_TITLE).first).to_be_visible()
+
+
+def test_delete_project(admin_page: AdminPage):
+    """
+    Test 13: Menghapus data Project yang dibuat dan memastikan terhapus.
+    """
+    admin_page.delete_project(TEST_PROJECT_TITLE)
+    expect(admin_page.projects_tbody.locator("tr").filter(has_text=TEST_PROJECT_TITLE)).to_have_count(0)
 
 
 # ==============================================================================
@@ -167,7 +203,7 @@ def test_create_new_project(admin_page: AdminPage):
 
 def test_navigate_to_articles(admin_page: AdminPage):
     """
-    Test 11: Memverifikasi navigasi ke menu Articles berhasil.
+    Test 14: Memverifikasi navigasi ke menu Articles berhasil.
     """
     admin_page.go_to_articles()
 
@@ -178,7 +214,7 @@ def test_navigate_to_articles(admin_page: AdminPage):
 
 def test_open_and_close_article_modal(admin_page: AdminPage):
     """
-    Test 12: Memverifikasi modal Add Article dapat dibuka dan ditutup.
+    Test 15: Memverifikasi modal Add Article dapat dibuka dan ditutup.
     """
     admin_page.open_create_article_modal()
 
@@ -193,19 +229,28 @@ def test_open_and_close_article_modal(admin_page: AdminPage):
 
 def test_create_new_article(admin_page: AdminPage):
     """
-    Test 13: Menambahkan artikel/cerita baru.
+    Test 16: Menambahkan artikel/cerita baru.
     """
-    unique_id = int(time.time())
     admin_page.open_create_article_modal()
 
     admin_page.fill_and_save_article(
-        title=f"Belajar Playwright Python {unique_id}",
-        slug=f"belajar-playwright-{unique_id}",
+        title=TEST_ARTICLE_TITLE,
+        slug=TEST_ARTICLE_SLUG,
         category="Testing",
         content="Panduan lengkap setup dan implementasi Page Object Model Playwright Python."
     )
 
     expect(admin_page.modal_article).not_to_be_visible()
+    expect(admin_page.articles_tbody.locator("tr").filter(has_text=TEST_ARTICLE_TITLE).first).to_be_visible()
+
+
+def test_delete_article(admin_page: AdminPage):
+    """
+    Test 17: Menghapus data Article yang dibuat dan memastikan terhapus.
+    """
+    admin_page.delete_article(TEST_ARTICLE_TITLE)
+    expect(admin_page.articles_tbody.locator("tr").filter(has_text=TEST_ARTICLE_TITLE)).to_have_count(0)
+
 
 
 # ==============================================================================
@@ -214,7 +259,7 @@ def test_create_new_article(admin_page: AdminPage):
 
 def test_navigate_to_contacts(admin_page: AdminPage):
     """
-    Test 14: Memverifikasi navigasi ke menu Contacts / Messages berhasil.
+    Test 18: Memverifikasi navigasi ke menu Contacts / Messages berhasil.
     """
     admin_page.go_to_contacts()
 
@@ -228,7 +273,7 @@ def test_navigate_to_contacts(admin_page: AdminPage):
 
 def test_navigate_to_error_scene(admin_page: AdminPage):
     """
-    Test 15: Memverifikasi halaman konfigurasi 404 Error Scene berhasil dibuka.
+    Test 19: Memverifikasi halaman konfigurasi 404 Error Scene berhasil dibuka.
     """
     admin_page.go_to_error_scene()
 

@@ -272,3 +272,46 @@ class AdminPage:
         self.input_article_category.fill(category)
         self.textarea_article_content.fill(content)
         self.btn_save_article.click()
+
+    # ==========================================
+    # ACTION METHODS: DELETE OPERATIONS
+    # ==========================================
+    def delete_experience(self, company: str):
+        """Mencari data experience berdasarkan company dan mengonfirmasi hapus."""
+        self.go_to_experiences()
+        row = self.experiences_tbody.locator("tr").filter(has_text=company).first
+        row.locator("button.delete, button[title*='Delete']").click()
+        self.modal_confirm.wait_for(state="visible")
+        self.btn_confirm_delete.click()
+        self.modal_confirm.wait_for(state="hidden")
+
+    def delete_tech_stack(self, name: str):
+        """Mencari data tech stack berdasarkan nama dan mengonfirmasi hapus."""
+        self.go_to_tech_stacks()
+        filter_all = self.view_tech_stacks.locator(".filter-btn").filter(has_text="All")
+        if filter_all.count() > 0:
+            filter_all.first.click()
+        row = self.tech_stacks_tbody.locator("tr").filter(has_text=name).first
+        row.locator("button.delete, button[title*='Delete']").click()
+        self.modal_confirm.wait_for(state="visible")
+        self.btn_confirm_delete.click()
+        self.modal_confirm.wait_for(state="hidden")
+
+    def delete_project(self, title: str):
+        """Mencari data project berdasarkan title dan mengonfirmasi hapus."""
+        self.go_to_projects()
+        row = self.projects_tbody.locator("tr").filter(has_text=title).first
+        row.locator("button.delete, button[title*='Delete']").click()
+        self.modal_confirm.wait_for(state="visible")
+        self.btn_confirm_delete.click()
+        self.modal_confirm.wait_for(state="hidden")
+
+    def delete_article(self, title: str):
+        """Mencari data article berdasarkan title dan mengonfirmasi hapus."""
+        self.go_to_articles()
+        row = self.articles_tbody.locator("tr").filter(has_text=title).first
+        row.locator("button.btn-danger, button:has-text('Delete'), button[title*='Delete']").click()
+        self.modal_confirm.wait_for(state="visible")
+        self.btn_confirm_delete.click()
+        self.modal_confirm.wait_for(state="hidden")
+
