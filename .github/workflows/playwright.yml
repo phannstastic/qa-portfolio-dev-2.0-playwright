@@ -1,0 +1,40 @@
+name: Playwright Tests
+
+# Kapan robot ini jalan? Setiap kali Anda push kode ke GitHub
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Ambil kode Anda dari GitHub
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 2. Siapkan Python di server cloud
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    # 3. Install dependencies & Playwright
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest-playwright python-dotenv
+
+    # 4. Install browser Playwright di server cloud
+    - name: Install Playwright Browsers
+      run: playwright install --with-deps chromium
+
+    # 5. Jalankan pengujian otomatis menggunakan Secrets!
+    - name: Run Playwright tests
+      env:
+        ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+        ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+      run: pytest
